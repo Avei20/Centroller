@@ -1,9 +1,14 @@
 import serial 
+import serial.tools.list_ports as listPort
 import tkinter
+from tkinter import PhotoImage, ttk
+from tkinter.messagebox import showinfo
 import time 
 
 def quit_btn () : 
     # global tkTop
+    white_status.set('White Off')
+    biru_status.set('Biru Off')
     ser.write(bytes('L', 'UTF-8'))
     ser.write(bytes('I', 'UTF-8'))
     # tkTop.destroy()
@@ -24,21 +29,43 @@ def biru_off_button() :
     biru_status.set('Biru Off')
     ser.write(bytes('I', 'UTF-8'))
 
-def ganti_port (port, new_port) : 
-    port = new_port
+def ganti_port (event) : 
+    port = combo_port.get()
+    print (port)
+    ser = serial.Serial(port, 9600)
+    msg = f'Changed into {port}'
+    showinfo(title='Ganti Port', message=msg)
+    print (ser.isOpen())
 
-port = 'COM4'
+
+ports = listPort.comports()
+
+list_port = []
+
+for port, desc, hwid in sorted(ports):
+    list_port.append (port)
+
+default_port = list_port[0]
+
 
 tkTop = tkinter.Tk()
-tkTop.geometry('300x450')
+tkTop.geometry('300x500')
 tkTop.title('LED Controller Avei')
 
-# com_label = tkinter.Label(text = 'Port berapa (default COM3)')
-# com_label.pack()
+icon = PhotoImage(file = 'led-icon-25.png')
+tkTop.iconphoto(False, icon)
 
-# com_input =tkinter.Entry()
-# com_input.insert(-1, 'COM3')
-# com_input.pack()
+com_label = tkinter.Label(text = 'Pilih Port Arduino-nya: ')
+com_label.pack()
+
+avail_port = tkinter.StringVar()
+
+combo_port = ttk.Combobox(tkTop, textvariable=avail_port)
+combo_port['values'] = list_port
+combo_port['state'] = 'readonly'
+combo_port.pack()
+
+combo_port.bind('<<ComboboxSelected>>', ganti_port)
 
 # button0 = tkinter.IntVar()
 # button0state = tkinter.Button(tkTop, 
@@ -50,6 +77,7 @@ tkTop.title('LED Controller Avei')
 # button0state.pack(side='top', ipadx=10, padx=10, pady=15)
 
 ser = serial.Serial(port , 9600)
+print (ser.isOpen())
 
 title_label = tkinter.Label(text = 'LED STATUS', )
 title_label.pack()
