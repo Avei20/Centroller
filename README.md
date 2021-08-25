@@ -1,2 +1,3 @@
-# LED Room Controller using tkinter with Arduino
+# Centroller 
+LED Controller based on Arduino 
  
