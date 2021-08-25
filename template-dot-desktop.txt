@@ -1,0 +1,5 @@
+[Desktop Entry]
+Version=1.0
+Exec=(main.py path)
+Name=<Centroller>
+Type=Application
